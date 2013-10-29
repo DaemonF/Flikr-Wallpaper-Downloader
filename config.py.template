@@ -1,0 +1,44 @@
+"""
+This file defines an example criteria for the flikrWallpaper.py script.
+
+You will probably want to change the photoFolder, set the 
+minHeight and minWidth to the size of your monitor and the
+searches to categories you like.
+"""
+import os.path
+
+
+###   These vars are only used in this file and could be removed
+
+# The directory to download photos to
+_photoFolder = "/Users/<USERNAME>/Pictures/Wallpaper"
+
+# Minimum dimensions for a photo to be downloaded
+_minHeight = 1800
+_minWidth = 3880
+
+
+###   Everything beyond here must be defined
+
+# A list of seaches to query for (Use %20 instead of spaces)
+searches = [
+	"nature",
+	"country%20road"
+]
+
+# This method defines the criteria for photos
+# Returns True if the passed photo should be downloaded
+def matchesCriteria(photo):
+	return (
+		int(photo['width_o']) >= int(photo['height_o'])   # landscape only
+		and int(photo['width_o']) >= _minWidth             # is larger than the minWidth set above
+		and int(photo['height_o']) >= _minHeight           # same for min height
+		and int(photo['views']) >= 1 	                  # at least one person bothered to look at it
+		and photo['url_o'][-4:] == ".jpg"                 # the photo is a JPEG file
+	)
+
+# This method names a photo to be downloaded
+# Returns the full path where the photo should be downloaded
+def downloadAs(photo):
+	photoName = "flikr_%s.jpg"%photo['id']                # a unique name for this image
+	return os.path.join(_photoFolder, photoName)
